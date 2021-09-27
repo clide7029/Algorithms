@@ -5,14 +5,14 @@ public class App {
         PriorityQueue pq = new PriorityQueue();
         Random rand = new Random();
 
-        for(int i=0; i<7; i++){
-            int r = rand.nextInt(100);
-            System.out.println("pushing on (" + r + ", " + i + ")");
-            pq.push(r, i);
+        for(int e=0; e<3; e++){
+            int p = rand.nextInt(100);
+            System.out.println("pushing on (" + p + ", " + e + ")");
+            pq.push(p, e);
         }
 
         pq.printMap();
-        pq.printHeap();
+        // pq.printHeap();
 
     }
 }

@@ -49,7 +49,7 @@ public class PriorityQueue {
 		//put pair in heap
 		heap.add(pair);
 		//exchange with parents till it fits
-		int idx = percolateUp(heap.size()-1);
+		int idx = percolateUp(size());
 
 		//put element in the location map
 		location.put(element,idx);
@@ -70,7 +70,7 @@ public class PriorityQueue {
 			new AssertionError("Priority Queue is Empty.");
 		}
 
-		int last_idx = heap.size()-1;
+		int last_idx = size();
 		// swap root and last element
 		swap(0,last_idx);
 		// remove "old root"
@@ -194,7 +194,7 @@ public class PriorityQueue {
 	 *  @return number of elements in the priority queue
 	 */
 	public int size() {
-		return heap.size();
+		return heap.size()-1;
 	}
 
 
@@ -272,7 +272,7 @@ public class PriorityQueue {
 	 * @return index of element's left child in list
 	 */
 	private int left(int parent) {
-		return ((2 * parent) + 1);
+		return ((2*parent) + 1);
 	}
 
 	/**
@@ -326,13 +326,13 @@ public class PriorityQueue {
 	/**
 	 * Print the underlying list representation
 	 */
-	public void printHeap() {
-		for(int i = 0; i<heap.size(); i++){
+	// public void printHeap() {
+	// 	for(int i = 0; i<heap.size(); i++){
 			
-			int p = heap.get(i).priority;
-			System.out.println(p);
-		}
-	}
+	// 		int p = heap.get(i).priority;
+	// 		System.out.println(p);
+	// 	}
+	// }
 
 	/**
 	 * Print the entries in the location map
