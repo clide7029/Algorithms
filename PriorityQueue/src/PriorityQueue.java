@@ -48,8 +48,9 @@ public class PriorityQueue {
 		Pair<Integer,Integer> pair = new Pair<Integer,Integer>(priority,element);
 		//put pair in heap
 		heap.add(pair);
+		printHeap();
 		//exchange with parents till it fits
-		int idx = percolateUp(size());
+		int idx = percolateUp(size()-1);
 
 		//put element in the location map
 		location.put(element,idx);
@@ -70,12 +71,12 @@ public class PriorityQueue {
 			new AssertionError("Priority Queue is Empty.");
 		}
 
-		int last_idx = size();
+		int last_idx = size()-1;
 		// swap root and last element
 		swap(0,last_idx);
 		// remove "old root"
-		heap.remove(last_idx);
 		location.remove(heap.get(last_idx).element);
+		heap.remove(last_idx);
 		// percolate new root down by checking children
 		pushDown(0);
 	}
@@ -194,7 +195,7 @@ public class PriorityQueue {
 	 *  @return number of elements in the priority queue
 	 */
 	public int size() {
-		return heap.size()-1;
+		return heap.size();
 	}
 
 
@@ -211,7 +212,7 @@ public class PriorityQueue {
 	 */
 	private int pushDown(int start_index) {	
 		int idx = start_index;
-		while (!isLeaf(idx)) {
+		while (left(idx) < heap.size()) {
 			// check if left child has higher priority
 			if(heap.get(idx).priority > heap.get(left(idx)).priority){
 				swap(idx, left(idx));
@@ -257,13 +258,13 @@ public class PriorityQueue {
 		location.remove(el2);
 
 		//swap list elements
-		Pair<Integer,Integer> temp = new Pair<Integer,Integer>(el1, pr1);
-		heap.add(i,heap.get(j));
-		heap.add(j,temp);
+		Pair<Integer,Integer> temp = new Pair<Integer,Integer>(pr1, el1);
+		heap.set(i,heap.get(j));
+		heap.set(j,temp);
 
 		// put new elements back into location map
-		location.put(el1, i);
-		location.put(el2, j);
+		location.put(el1, j);
+		location.put(el2, i);
 	}
 
 	/**
@@ -305,14 +306,14 @@ public class PriorityQueue {
 	 * @param i index of element in heap
 	 * @return true if element is a leaf
 	 */
-	private boolean isLeaf(int i){
-		int len = heap.size();
-		if(i > (len / 2) && i < len){
-			return true;
-		}else {
-			return false;
-		}
-	}
+	// private boolean isLeaf(int i){
+	// 	int len = heap.size();
+	// 	if(i > (len / 2) && i < len){
+	// 		return true;
+	// 	}else {
+	// 		return false;
+	// 	}
+	// }
 
 	/**
 	 * Returns true if element has two children in the heap
@@ -326,13 +327,13 @@ public class PriorityQueue {
 	/**
 	 * Print the underlying list representation
 	 */
-	// public void printHeap() {
-	// 	for(int i = 0; i<heap.size(); i++){
+	public void printHeap() {
+		for(int i = 0; i<heap.size(); i++){
 			
-	// 		int p = heap.get(i).priority;
-	// 		System.out.println(p);
-	// 	}
-	// }
+			int p = heap.get(i).priority;
+			System.out.println(p);
+		}
+	}
 
 	/**
 	 * Print the entries in the location map
