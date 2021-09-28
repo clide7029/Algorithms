@@ -38,17 +38,18 @@ public class PriorityQueue {
 	 *  
 	 */
 	public void push(int priority, int element) {
+		// check that new element is unique
 		if(location.containsKey(element)){
-			new AssertionError("Element already exists in Priority Queue");
+			throw new AssertionError("Element already exists in Priority Queue");
+		// and non-negative
 		}else if(priority < 0){
-			new AssertionError("Priority must be non-negative");
+			throw new AssertionError("Priority must be non-negative");
 		}
 
 		//construct pair
 		Pair<Integer,Integer> pair = new Pair<Integer,Integer>(priority,element);
 		//put pair in heap
 		heap.add(pair);
-		printHeap();
 		//exchange with parents till it fits
 		int idx = percolateUp(size()-1);
 
@@ -67,8 +68,8 @@ public class PriorityQueue {
 	 */
 	public void pop(){
 		// check heap is non-empty
-		if(heap.isEmpty()){
-			new AssertionError("Priority Queue is Empty.");
+		if(heap.isEmpty() || heap.size() < 1){
+			throw new AssertionError("Priority Queue is Empty.");
 		}
 
 		int last_idx = size()-1;
@@ -77,8 +78,12 @@ public class PriorityQueue {
 		// remove "old root"
 		location.remove(heap.get(last_idx).element);
 		heap.remove(last_idx);
-		// percolate new root down by checking children
-		pushDown(0);
+		// push new root down by checking children
+		int new_idx = pushDown(0);
+		// update the location map
+		if(!location.isEmpty()) {
+			location.replace(heap.get(new_idx).element, new_idx);
+		}
 	}
 
 
@@ -94,8 +99,10 @@ public class PriorityQueue {
 	public int topPriority() {	
 		// check heap is non-empty
 		if (heap.isEmpty()) {
-			new AssertionError("Priority Queue is Empty.");
+			throw new AssertionError("Priority Queue is Empty.");
 		}	
+
+		// return root node's priority
 		return heap.get(0).priority;
 	}
 
@@ -112,8 +119,10 @@ public class PriorityQueue {
 	public int topElement() {
 		// check heap is non-empty
 		if (heap.isEmpty()) {
-			new AssertionError("Priority Queue is Empty.");
+			throw new AssertionError("Priority Queue is Empty.");
 		}
+
+		// return root node's element
 		return heap.get(0).element;
 	}
 
@@ -132,13 +141,23 @@ public class PriorityQueue {
 	 *	</ul>
 	 */
 	public void changePriority(int newpriority, int element) {
-		if(!location.containsKey(element)){
-			new AssertionError("Given element cannot be found in the Priority Queue.");
+		// check element exists in priority queue
+		if(!isPresent(element)){
+			throw new AssertionError("Given element cannot be found in the Priority Queue.");
+		// check new priority is non-negative 
 		}else if(newpriority < 0){
-			new AssertionError("Priority must be non-negative");
+			throw new AssertionError("Priority must be non-negative");
 		}
 
-		location.replace(element,newpriority);
+		int idx = location.get(element);
+		heap.get(idx).priority = newpriority;
+		// check above for lower priority elements
+		idx = percolateUp(idx);
+		// check below for higher priority elements
+		idx = pushDown(idx);
+
+		// update the location map
+		location.replace(element,idx);
 	}
 
 
@@ -154,11 +173,14 @@ public class PriorityQueue {
 	 *	</ul>
 	 */
 	public int getPriority(int element) {
+		// check that element exists in priority queue
 		if(!location.containsKey(element)){
-			new AssertionError("Given element cannot be found in the Priority Queue.");
+			throw new AssertionError("Given element cannot be found in the Priority Queue.");
 		}
 
 		int idx = location.get(element);
+		
+		//return given element's priority
 		return heap.get(idx).priority;
 	}
 
@@ -178,7 +200,6 @@ public class PriorityQueue {
 		if(location.containsKey(element)){
 			return true;
 		}
-
 		return false;
 	}
 
@@ -186,7 +207,7 @@ public class PriorityQueue {
 	 *  Removes all elements from the priority queue
 	 */
 	public void clear() {
-		heap.removeAll(heap);
+		heap.clear();
 		location.clear();
 	}
 
@@ -212,15 +233,23 @@ public class PriorityQueue {
 	 */
 	private int pushDown(int start_index) {	
 		int idx = start_index;
-		while (left(idx) < heap.size()) {
+		while (left(idx) < heap.size()-1) {
 			// check if left child has higher priority
 			if(heap.get(idx).priority > heap.get(left(idx)).priority){
-				swap(idx, left(idx));
-				idx = left(idx);
+				// check if right child is even smaller 
+				if (heap.get(right(idx)).priority < heap.get(left(idx)).priority) {
+					swap(idx, right(idx));
+					idx = right(idx);
+				}else{
+					swap(idx, left(idx));
+					idx = left(idx);
+				}
 			// check if right child has higher priority
 			}else if(heap.get(idx).priority > heap.get(right(idx)).priority) {
 				swap(idx, right(idx));
 				idx = right(idx);
+			}else{
+				return idx;
 			}
 		}
 		return idx;
@@ -299,30 +328,6 @@ public class PriorityQueue {
 	/*********************************************************
 	 * 	These are optional private methods that may be useful
 	 *********************************************************/
-	
-
-	/**
-	 * Returns true if element is a leaf in the heap
-	 * @param i index of element in heap
-	 * @return true if element is a leaf
-	 */
-	// private boolean isLeaf(int i){
-	// 	int len = heap.size();
-	// 	if(i > (len / 2) && i < len){
-	// 		return true;
-	// 	}else {
-	// 		return false;
-	// 	}
-	// }
-
-	/**
-	 * Returns true if element has two children in the heap
-	 * @param i index of element in the heap
-	 * @return true if element in heap has two children
-	 */
-	// private boolean hasTwoChildren(int i) {
-	// 	// TODO: Fill in
-	// }
 	
 	/**
 	 * Print the underlying list representation
