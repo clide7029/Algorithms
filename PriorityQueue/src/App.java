@@ -12,9 +12,11 @@ public class App {
             System.out.println("pushing on (" + p + ", " + e + ")");
             pq.push(p, e);
         }
-        for(int i=0; i<16; i++){
+        for(int i=0; i<15; i++){
             System.out.println("\n------"+pq.size()+"------\n");
             pq.pop();
+            pq.printMap();
+            pq.printHeap();
         }
 
         System.out.println(pq.isEmpty());

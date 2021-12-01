@@ -2,7 +2,7 @@
  * A wrapper class for priority queue elements
  * 
  * @author americachambers
- *
+ *  
  */
 public class Pair<P, E> {
 	public P priority;

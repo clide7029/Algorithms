@@ -336,7 +336,8 @@ public class PriorityQueue {
 		for(int i = 0; i<heap.size(); i++){
 			
 			int p = heap.get(i).priority;
-			System.out.println(p);
+			int e = heap.get(i).element;
+			System.out.println("(" + p + ", " + e + ")");
 		}
 	}
 

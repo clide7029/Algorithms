@@ -1,5 +1,4 @@
 import java.util.Collection;
-import java.util.List;
 import java.util.Iterator;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,18 +8,19 @@ import java.util.Map;
 
 
 /**
- * An interface describing a Graph object. The graph can be either directed or
- * undirected.
+ * An interface describing a Graph object. The graph is directed
  * 
- * @author alchambers
+ * @author sbenjamin
  */
 public class Graph<V> implements GraphIfc<V>{
 
     protected Map<V, Set<V>> adjList;
+    protected int edges;
 
-    public <V> Graph(V vertex) {
+    public <V> Graph() {
 
-        adjList = new Map<V, Set<V>();
+        adjList = new HashMap<>();
+        edges = 0;
     }
 
     /**
@@ -38,11 +38,7 @@ public class Graph<V> implements GraphIfc<V>{
      * @return The number of edges in the graph
      */
     public int numEdges(){
-        int size = 0;
-        for (Map.Entry<V,Set<V>> adjEntry : adjList.entrySet()) {
-            size += adjEntry.getValue().size();
-        }
-        return size;
+        return edges;
     }
 
     /**
@@ -50,6 +46,7 @@ public class Graph<V> implements GraphIfc<V>{
      */
     public void clear(){
         adjList.clear();
+        edges = 0;
     }
 
     /**
@@ -59,8 +56,10 @@ public class Graph<V> implements GraphIfc<V>{
      * @param v The vertex to be added
      */
     public void addVertex(V v){
-        Set<V> set = new HashSet<V>();
-        adjList.put(v, set);
+        if(!adjList.containsKey(v)){
+            Set<V> set = new HashSet<V>();
+            adjList.put(v, set);
+        }
     }
 
     /**
@@ -72,11 +71,11 @@ public class Graph<V> implements GraphIfc<V>{
      *                                  graph.
      */
     public void addEdge(V u, V v){
-        if(!(adjList.containsKey(u) && adjList.containsKey(v))){
+        if(!(adjList.containsKey(u)) && adjList.containsKey(v)){
             throw new IllegalArgumentException();
         }
-        adjList.get(v).add(u);
         adjList.get(u).add(v);
+        edges += 1;
     }
 
     /**
@@ -85,11 +84,7 @@ public class Graph<V> implements GraphIfc<V>{
      * @return A set containing all vertices in the graph
      */
     public Set<V> getVertices(){
-        Set<V> set = new HashSet<V>();
-        for (Map.Entry<V,Set<V>> adjEntry : adjList.entrySet()) {
-            set.add(adjEntry.getKey());
-        }
-        return set;
+        return adjList.keySet();
     }
 
     /**
@@ -132,22 +127,8 @@ public class Graph<V> implements GraphIfc<V>{
         if(!(adjList.containsKey(v) && adjList.containsKey(u))){
             throw new IllegalArgumentException();
         }
-        Iterator<V> v_iter = adjList.get(v).iterator();
-        Iterator<V> u_iter = adjList.get(u).iterator();
-        Set<V> v_adj = adjList.get(v);
-        Set<V> u_adj = adjList.get(u);
-        
-        while(v_iter.hasNext() || u_iter.hasNext()){
-            if(u_adj.contains(v_iter.next())){
-                return true;
-            }
-            if (v_adj.contains(u_iter.next())) {
-                return true;
-            }
-        }
 
-        return false;
-
+        return adjList.get(v).contains(u);
     }
 
     /**
@@ -162,6 +143,7 @@ public class Graph<V> implements GraphIfc<V>{
         if(!adjList.containsKey(v)){
             throw new IllegalArgumentException();
         }
+
         return adjList.get(v).size();
     }
 
@@ -175,13 +157,15 @@ public class Graph<V> implements GraphIfc<V>{
         String str = "";
         for (Map.Entry<V,Set<V>> adjEntry : adjList.entrySet()) {
             Iterator<V> adj_iter = adjEntry.getValue().iterator();
-            str += "\nVertice [" + adjEntry.getKey() + "] is adjacent to [";
+            str += "\nVertex [" + adjEntry.getKey() + "] is adjacent to [";
             while(adj_iter.hasNext()){
                 str += (adj_iter.next() + ", ");
             }
+            if(!str.substring(str.length()-1, str.length()).equals("[")){
+                str = str.substring(0,str.length()-2);
+            }
             str += "]";
         }
-        System.out.println(str);
         return str;
 
     }
