@@ -3,6 +3,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import util.Pair;
+
 /**
  * A priority queue class implemented using a min heap.
  * Priorities cannot be negative.
