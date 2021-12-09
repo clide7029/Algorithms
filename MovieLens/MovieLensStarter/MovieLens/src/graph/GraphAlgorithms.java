@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class GraphAlgorithms {
 	
-	public ArrayList<Integer> dijkstras(Graph<Integer> G, int start, int end){
+	public ArrayList<Integer> dijkstras(Graph<Integer> G, int start){
 		Set<Integer> nodes = G.getVertices();
 		PriorityQueue Q = new PriorityQueue();
 		HashMap<Integer, Integer> dist = new HashMap<>();
