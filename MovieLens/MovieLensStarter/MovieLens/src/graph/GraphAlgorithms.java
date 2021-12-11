@@ -1,6 +1,7 @@
 package graph;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class GraphAlgorithms {
@@ -34,6 +35,21 @@ public class GraphAlgorithms {
 		return prev;
 	}
 
+	public int[] dijkstrasPath(Graph<Integer> G, int start, int end) {
+		int current = end;
+		int[] prev = dijkstrasAlgorithm(G, start);
+		int[] path = new int[prev.length];
+		path[0] = current;
+		int i = 1;
+
+		while (current != start) {
+			path[i++] = prev[current];
+			current = prev[current];
+		}
+
+		return path;
+	}
+
 	public int[] commonNeighbors(Graph<Integer> G, int u, int v) {
 		Set<Integer> seen = G.getNeighbors(u);
 		int[] res = new int[seen.size()];
@@ -51,12 +67,12 @@ public class GraphAlgorithms {
 	public int[] commonNeighborsList(Graph<Integer> G, int[] liked) {
 		Set<Integer> seen = G.getNeighbors(liked[0]);
 		int[] res = new int[G.getVertices().size()];
-		int i = 0;
+		int j = 0;
 
-		for (int like : liked) {
-			for (Integer node : G.getNeighbors(like)) {
+		for (int i = 1; i < liked.length; i++) {
+			for (Integer node : G.getNeighbors(liked[i])) {
 				if (seen.contains(node)) {
-					res[i++] = node;
+					res[j++] = node;
 				} else {
 					seen.add(node);
 				}
@@ -64,6 +80,19 @@ public class GraphAlgorithms {
 		}
 
 		return res;
+	}
+
+	public int[] interestingPath(Graph<Integer> G, int popularNode) {
+		Map<Integer, Integer> dfs = G.dfs(popularNode);
+		int current = popularNode;
+		int[] path = new int[G.numVertices()];
+		int i = 0;
+
+		while (dfs.containsKey(current)) {
+			path[i++] = current;
+			current = dfs.get(current);
+		}
+		return path;
 	}
 
 }
