@@ -1,4 +1,7 @@
+package graph;
+
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -90,4 +93,11 @@ public interface GraphIfc<V> {
 	 */
 	public String toString();
 	
+	public Map<V, V> bfs(V origin);
+
+	public void addDoubleEdge(V u, V v, int weight);
+
+	public Map<V, V> dfs(V origin);
+
+
 }
