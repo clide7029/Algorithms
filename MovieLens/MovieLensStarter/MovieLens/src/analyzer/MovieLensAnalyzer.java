@@ -27,8 +27,10 @@ public class MovieLensAnalyzer {
 		// FILL IN THE REST OF YOUR PROGRAM
 
 		DataLoader dl = new DataLoader();
-		dl.loadData("bin/ml-latest-small/movies.csv", "bin/ml-latest-small/ratings.csv");
+		dl.loadData("Algorithms/MovieLens/MovieLensStarter/MovieLens/bin/ml-latest-small/movies.csv",
+				"Algorithms/MovieLens/MovieLensStarter/MovieLens/bin/ml-latest-small/ratings.csv");
 		Map<Integer, Movie> movies = dl.getMovies();
+		System.out.println(movies.toString());
 
 		Scanner scan = new Scanner(System.in);
 		String[] fileList = new String[20];
@@ -55,13 +57,13 @@ public class MovieLensAnalyzer {
 			System.out.print("Creating graph ...");
 			switch (graphChoice) {
 				case 1:
-					G = MovieLensAnalyzer.option1(movies);
+					G = option1(movies);
 					break;
 				case 2:
-					G = MovieLensAnalyzer.option2(movies);
+					G = option2(movies);
 					break;
 				case 3:
-					G = MovieLensAnalyzer.option3(movies);
+					G = option3(movies);
 					break;
 				default:
 					break;
@@ -143,20 +145,24 @@ public class MovieLensAnalyzer {
 		int numNodes = G.numVertices();
 		int numEdges = G.numEdges();
 		System.out.println("numNodes = " + numNodes);
-		double density = numEdges / (numNodes * (numNodes - 1));
+		double density = (double) numEdges / (numNodes * (numNodes - 1));
 		int maxDegree = highestDegree(G);
 		int diameter = -1;
-		int average = -1;
+		int average = 0;
+		int count = 0;
 
 		for (int i = 0; i < paths.length; i++) {
 			for (int j = 0; j < paths.length; j++) {
-				average += paths[i][j];
-				if (paths[i][j] > diameter) {
-					diameter = paths[i][j];
+				if (paths[i][j] < numNodes) {
+					average += paths[i][j];
+					count += 1;
+					if (paths[i][j] > diameter) {
+						diameter = paths[i][j];
+					}
 				}
 			}
 		}
-		average = average / (paths.length ^ 2);
+		average = average / count;
 
 		System.out.println("Number of nodes: " + numNodes);
 		System.out.println("Number of edges: " + numEdges);

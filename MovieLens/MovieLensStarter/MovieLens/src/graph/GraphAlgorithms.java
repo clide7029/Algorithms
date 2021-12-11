@@ -2,6 +2,8 @@ package graph;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
+
 import data.Movie;
 
 public class GraphAlgorithms {
@@ -33,16 +35,16 @@ public class GraphAlgorithms {
 
 	public static int[] dijkstrasAlgorithm(Graph<Integer> G, int start) {
 		Set<Integer> nodes = G.getVertices();
-		int size = nodes.size();
+		int size = nodes.size() + 1;
 		PriorityQueue Q = new PriorityQueue();
 		int[] dist = new int[size];
 		int[] prev = new int[size];
-		Integer max = Integer.MAX_VALUE;
+		Integer max = Integer.MAX_VALUE - 100000;
 
 		dist[start] = 0;
 		for (Integer node : nodes) {
 			dist[node] = max;
-			Q.push(node, dist[node]);
+			Q.push(dist[node], node);
 		}
 
 		while (!Q.isEmpty()) {
@@ -52,7 +54,7 @@ public class GraphAlgorithms {
 				if (altCost < dist[v]) {
 					dist[v] = altCost;
 					prev[v] = u;
-					Q.changePriority(v, altCost);
+					Q.changePriority(altCost, v);
 				}
 			}
 		}
@@ -60,23 +62,25 @@ public class GraphAlgorithms {
 		return prev;
 	}
 
-	public static int[] dijkstrasPath(Graph<Integer> G, int start, int end) {
+	public static Stack<Integer> dijkstrasPath(Graph<Integer> G, int start, int end) {
 		int current = end;
 		int[] prev = dijkstrasAlgorithm(G, start);
-		int[] path = new int[prev.length];
-		path[0] = current;
-		int i = 1;
+		Stack<Integer> path = new Stack<>();
+		// path[0] = current;
+		// int i = 1;
 
 		while (current != start) {
-			path[i++] = prev[current];
+			path.push(current);
 			current = prev[current];
 		}
+
+		path.push(current);
 
 		return path;
 	}
 
 	public static void printDijkstrasPath(Graph<Integer> G, Map<Integer, Movie> movies, int start, int end) {
-		int[] path = dijkstrasPath(G, start, end);
+		Stack<Integer> path = dijkstrasPath(G, start, end);
 
 		String str = "{";
 		for (int node : path) {
