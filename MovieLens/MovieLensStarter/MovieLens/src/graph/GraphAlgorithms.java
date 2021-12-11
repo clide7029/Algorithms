@@ -1,12 +1,37 @@
 package graph;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import data.Movie;
 
 public class GraphAlgorithms {
 
-	public int[] dijkstrasAlgorithm(Graph<Integer> G, int start) {
+	public static int[][] floydWarshall(Graph<Integer> G) {
+		int[][] A = new int[G.numVertices()][G.numVertices()];
+		for (int i = 0; i < A.length; i++) {
+			for (int j = 0; j < A[i].length; j++) {
+				if (i == j) {
+					A[i][j] = 0;
+				} else if (G.edgeExists(i + 1, j + 1)) {
+					A[i][j] = G.getWeight(i + 1, j + 1);
+				} else {
+					A[i][j] = A.length + 1;
+				}
+			}
+		}
+		for (int k = 0; k < A.length; k++) {
+			int[][] B = new int[G.numVertices()][G.numVertices()];
+			for (int i = 0; i < B.length; i++) {
+				for (int j = 0; j < B[i].length; j++) {
+					B[i][j] = Math.min(A[i][k] + A[k][j], A[i][j]);
+				}
+			}
+			A = B;
+		}
+		return A;
+	}
+
+	public static int[] dijkstrasAlgorithm(Graph<Integer> G, int start) {
 		Set<Integer> nodes = G.getVertices();
 		int size = nodes.size();
 		PriorityQueue Q = new PriorityQueue();
@@ -35,7 +60,7 @@ public class GraphAlgorithms {
 		return prev;
 	}
 
-	public int[] dijkstrasPath(Graph<Integer> G, int start, int end) {
+	public static int[] dijkstrasPath(Graph<Integer> G, int start, int end) {
 		int current = end;
 		int[] prev = dijkstrasAlgorithm(G, start);
 		int[] path = new int[prev.length];
@@ -50,7 +75,18 @@ public class GraphAlgorithms {
 		return path;
 	}
 
-	public int[] commonNeighbors(Graph<Integer> G, int u, int v) {
+	public static void printDijkstrasPath(Graph<Integer> G, Map<Integer, Movie> movies, int start, int end) {
+		int[] path = dijkstrasPath(G, start, end);
+
+		String str = "{";
+		for (int node : path) {
+			str += "\n\t" + movies.get(node).getTitle();
+		}
+		str += "}";
+		System.out.println(str);
+	}
+
+	public static int[] printCommonNeighbors(Graph<Integer> G, Map<Integer, Movie> movies, int u, int v) {
 		Set<Integer> seen = G.getNeighbors(u);
 		int[] res = new int[seen.size()];
 		int i = 0;
@@ -61,10 +97,17 @@ public class GraphAlgorithms {
 			}
 		}
 
+		String str = "{";
+		for (int node : res) {
+			str += "\n\t" + movies.get(node).getTitle();
+		}
+		str += "}";
+		System.out.println(str);
+
 		return res;
 	}
 
-	public int[] commonNeighborsList(Graph<Integer> G, int[] liked) {
+	public static int[] commonNeighborsList(Graph<Integer> G, int[] liked) {
 		Set<Integer> seen = G.getNeighbors(liked[0]);
 		int[] res = new int[G.getVertices().size()];
 		int j = 0;
@@ -82,7 +125,7 @@ public class GraphAlgorithms {
 		return res;
 	}
 
-	public int[] interestingPath(Graph<Integer> G, int popularNode) {
+	public static void printInterestingPath(Graph<Integer> G, Map<Integer, Movie> movies, int popularNode) {
 		Map<Integer, Integer> dfs = G.dfs(popularNode);
 		int current = popularNode;
 		int[] path = new int[G.numVertices()];
@@ -92,7 +135,13 @@ public class GraphAlgorithms {
 			path[i++] = current;
 			current = dfs.get(current);
 		}
-		return path;
+
+		String str = "{";
+		for (int node : path) {
+			str += "\n\t" + movies.get(node).getTitle();
+		}
+		str += "}";
+		System.out.println(str);
 	}
 
 }
