@@ -5,12 +5,13 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class GraphAlgorithms {
-	
-	public ArrayList<Integer> dijkstras(Graph<Integer> G, int start){
+
+	public int[] dijkstras(Graph<Integer> G, int start) {
 		Set<Integer> nodes = G.getVertices();
+		int size = nodes.size();
 		PriorityQueue Q = new PriorityQueue();
 		HashMap<Integer, Integer> dist = new HashMap<>();
-		ArrayList<Integer> visited = new ArrayList<>();
+		int[] visited = new int[size];
 		Integer max = Integer.MAX_VALUE;
 
 		for (Integer node : nodes) {
@@ -18,13 +19,13 @@ public class GraphAlgorithms {
 			Q.push(node, dist.get(node));
 		}
 
-		while(!Q.isEmpty()){
+		while (!Q.isEmpty()) {
 			Integer u = Q.pop();
 			for (Integer v : G.getNeighbors(u)) {
 				int altCost = dist.get(u) + 1;
-				if(altCost < dist.get(v)){
+				if (altCost < dist.get(v)) {
 					dist.put(v, altCost);
-					visited.add(v, u);
+					visited[v] = u;
 					Q.changePriority(v, altCost);
 				}
 			}
@@ -32,6 +33,13 @@ public class GraphAlgorithms {
 
 		return visited;
 
-
 	}
+
+	public int[] findHeaviestNeighbor(Graph<Integer> G, int[] liked) {
+
+		for (int i = 0; i < liked.length; i++) {
+
+		}
+	}
+
 }
